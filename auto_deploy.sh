@@ -49,9 +49,13 @@ echo ""
 echo "======================================"
 echo "CONFIGURAZIONE"
 echo "======================================"
-read -p "Il tuo dominio (es. miosito.com): " DOMAIN
+read -p "Il tuo dominio principale (es. luigimeli.work): " DOMAIN
 read -p "Vuoi aggiungere anche www.$DOMAIN? (s/n): " ADD_WWW
 read -p "Email amministratore: " ADMIN_EMAIL
+read -p "Nome univoco per il servizio (es. portfolio): " SERVICE_NAME
+echo ""
+print_warning "IMPORTANTE: Questo deploy gestirà SOLO il dominio principale $DOMAIN"
+print_warning "I sottopercorsi come $DOMAIN/angular1 NON saranno toccati"
 echo ""
 
 # Genera SECRET_KEY automaticamente
@@ -126,9 +130,9 @@ fi
 
 # Configura Gunicorn service
 print_step "8/12" "Configurazione servizio Gunicorn..."
-sudo tee /etc/systemd/system/portfolio.service > /dev/null << EOF
+sudo tee /etc/systemd/system/${SERVICE_NAME}.service > /dev/null << EOF
 [Unit]
-Description=Portfolio Django Application
+Description=${SERVICE_NAME} Django Application - $DOMAIN
 After=network.target
 
 [Service]
@@ -136,12 +140,12 @@ User=www-data
 Group=www-data
 WorkingDirectory=$PROJECT_DIR
 Environment="PATH=$PROJECT_DIR/venv/bin"
-ExecStart=$PROJECT_DIR/venv/bin/gunicorn --workers 3 --bind unix:$PROJECT_DIR/portfolio.sock portfolio_project.wsgi:application
+ExecStart=$PROJECT_DIR/venv/bin/gunicorn --workers 3 --bind unix:$PROJECT_DIR/${SERVICE_NAME}.sock portfolio_project.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
 EOF
-print_success "Servizio Gunicorn configurato"
+print_success "Servizio Gunicorn configurato come ${SERVICE_NAME}.service"
 
 # Configura Nginx
 print_step "9/12" "Configurazione Nginx..."
@@ -151,42 +155,62 @@ else
     SERVER_NAME="$DOMAIN"
 fi
 
-sudo tee /etc/nginx/sites-available/portfolio > /dev/null << EOF
+sudo tee /etc/nginx/sites-available/${SERVICE_NAME} > /dev/null << EOF
+# Configurazione Nginx per $SERVICE_NAME
+# Gestisce SOLO il dominio principale: $DOMAIN
+# I sottopercorsi (es. /angular1, /app2) devono essere configurati separatamente
+
 server {
     listen 80;
     server_name $SERVER_NAME;
 
-    location = /favicon.ico { access_log off; log_not_found off; }
+    # Limita dimensione upload
+    client_max_body_size 10M;
+
+    # Favicon
+    location = /favicon.ico { 
+        access_log off; 
+        log_not_found off; 
+    }
     
+    # File statici di questo progetto Django - ISOLATI in questa cartella
     location /static/ {
         alias $PROJECT_DIR/staticfiles/;
         expires 30d;
         add_header Cache-Control "public, immutable";
     }
     
+    # File media di questo progetto Django - ISOLATI in questa cartella
     location /media/ {
         alias $PROJECT_DIR/media/;
         expires 30d;
         add_header Cache-Control "public";
     }
 
+    # IMPORTANTE: location / gestisce solo il dominio root
+    # Altri progetti in sottopercorsi NON sono gestiti da questa configurazione
     location / {
         include proxy_params;
-        proxy_pass http://unix:$PROJECT_DIR/portfolio.sock;
+        proxy_pass http://unix:$PROJECT_DIR/${SERVICE_NAME}.sock;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-}
-EOF
+        
+        # Timeout
+        proxy_connect${SERVICE_NAME}
+sudo systemctl enable ${SERVICE_NAME}
+sudo nginx -t && sudo systemctl restart nginx
+print_success "Servizi avviati (${SERVICE_NAME})"
 
-# Abilita sito Nginx
-sudo ln -sf /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/
-print_success "Nginx configurato"
-
-# Imposta permessi corretti
-print_step "10/12" "Impostazione permessi..."
+# Verifica stato servizi
+print_step "12/12" "Verifica servizi..."
+sleep 2
+if systemctl is-active --quiet ${SERVICE_NAME}; then
+    print_success "Gunicorn (${SERVICE_NAME}) è attivo"
+else
+    print_error "Gunicorn (${SERVICE_NAME}) non è attivo!"
+    print_warning "Controlla i log con: sudo journalctl -u ${SERVICE_NAME}
 sudo chown -R www-data:www-data $PROJECT_DIR
 sudo chmod -R 755 $PROJECT_DIR
 print_success "Permessi impostati"
@@ -204,30 +228,49 @@ print_step "12/12" "Verifica servizi..."
 sleep 2
 if systemctl is-active --quiet portfolio; then
     print_success "Gunicorn è attivo"
-else
-    print_error "Gunicorn non è attivo!"
-    print_warning "Controlla i log con: sudo journalctl -u portfolio -n 50"
-fi
-
-if systemctl is-active --quiet nginx; then
-    print_success "Nginx è attivo"
-else
-    print_error "Nginx non è attivo!"
-    print_warning "Controlla i log con: sudo tail -f /var/log/nginx/error.log"
-fi
-
+else� ARCHITETTURA ISOLATA:"
+echo "   ✓ Progetto: $PROJECT_DIR"
+echo "   ✓ Virtual env: $PROJECT_DIR/venv (ISOLATO)"
+echo "   ✓ Servizio: ${SERVICE_NAME}.service"
+echo "   ✓ Socket: $PROJECT_DIR/${SERVICE_NAME}.sock"
+echo "   ✓ Nginx config: /etc/nginx/sites-available/${SERVICE_NAME}"
 echo ""
-echo "======================================"
-echo -e "${GREEN}✓ DEPLOYMENT COMPLETATO!${NC}"
-echo "======================================"
-echo ""
-echo "Il tuo portfolio è ora online su:"
-echo -e "${BLUE}http://$DOMAIN${NC}"
+echo -e "${YELLOW}⚠ IMPORTANTE PER ECOSISTEMA MULTI-PROGETTO:${NC}"
+echo "   • Questo progetto gestisce SOLO: $DOMAIN (root)"
+echo "   • Altri progetti (es. /angular1) NON sono toccati"
+echo "   • Ogni progetto avrà la sua configurazione Nginx separata"
+echo "   • Tutte le dipendenze Python sono in: $PROJECT_DIR/venv"
 echo ""
 echo "📝 PROSSIMI PASSI:"
 echo ""
 echo "1. Configura SSL/HTTPS con Let's Encrypt:"
 echo "   sudo apt install certbot python3-certbot-nginx -y"
+echo "   sudo certbot --nginx -d $DOMAIN"
+if [ "$ADD_WWW" = "s" ] || [ "$ADD_WWW" = "S" ]; then
+    echo "   (aggiungi -d www.$DOMAIN se necessario)"
+fi
+echo ""
+echo "2. Accedi all'admin Django:"
+echo "   http://$DOMAIN/admin"
+echo ""
+echo "3. Per vedere i log di QUESTO progetto:"
+echo "   sudo journalctl -u ${SERVICE_NAME} -f"
+echo "   sudo tail -f /var/log/nginx/error.log"
+echo ""
+echo "4. Per aggiornare QUESTO progetto in futuro:"
+echo "   cd $PROJECT_DIR"
+echo "   git pull origin main"
+echo "   source venv/bin/activate"
+echo "   pip install -r requirements.txt"
+echo "   python manage.py migrate"
+echo "   python manage.py collectstatic --noinput"
+echo "   sudo systemctl restart ${SERVICE_NAME}"
+echo ""
+echo "5. Per aggiungere altri progetti (es. Angular):"
+echo "   • Crea una nuova cartella separata"
+echo "   • Configura un nuovo file Nginx per i sottopercorsi"
+echo "   • Esempio: /etc/nginx/sites-available/angular-app"
+echo "   • Non interferiranno con questo progetto!-certbot-nginx -y"
 echo "   sudo certbot --nginx -d $DOMAIN"
 if [ "$ADD_WWW" = "s" ] || [ "$ADD_WWW" = "S" ]; then
     echo "   (aggiungi -d www.$DOMAIN se necessario)"
