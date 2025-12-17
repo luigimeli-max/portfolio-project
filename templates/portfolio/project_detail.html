@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} | {{ site_settings.site_name|default:"Portfolio" }}{% endblock %}
+{% block meta_description %}{{ project.description }}{% endblock %}
+{% block og_title %}{{ project.title }}{% endblock %}
+{% block og_description %}{{ project.description }}{% endblock %}
+{% block og_image %}{{ project.image_thumbnail.url }}{% endblock %}
+
+{% block content %}
+<!-- Project Hero -->
+<section class="project-hero">
+    <div class="project-hero__bg">
+        {% if project.image_hero %}
+        <img src="{{ project.image_hero.url }}" alt="{{ project.title }}" class="project-hero__image">
+        {% else %}
+        <img src="{{ project.image_thumbnail.url }}" alt="{{ project.title }}" class="project-hero__image">
+        {% endif %}
+        <div class="project-hero__overlay"></div>
+    </div>
+    
+    <div class="project-hero__content container">
+        <a href="{% url 'portfolio:index' %}#projects" class="project-hero__back">
+            <i class="fas fa-arrow-left"></i>
+            <span>Torna ai progetti</span>
+        </a>
+        
+        <div class="project-hero__info" data-aos="fade-up">
+            <span class="project-hero__category">{{ project.get_category_display }}</span>
+            <h1 class="project-hero__title">{{ project.title }}</h1>
+            <p class="project-hero__description">{{ project.description }}</p>
+            
+            <div class="project-hero__tech">
+                {% for tech in project.tech_stack_list %}
+                <span class="tech-pill">{{ tech }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="project-hero__buttons">
+                {% if project.external_url %}
+                <a href="{{ project.external_url }}" target="_blank" rel="noopener" class="btn btn--primary">
+                    <span>Visualizza Sito</span>
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+                {% endif %}
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="btn btn--outline">
+                    <i class="fab fa-github"></i>
+                    <span>Codice Sorgente</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="project-content section">
+    <div class="project-content__container container">
+        <div class="project-content__grid">
+            <!-- Main Content -->
+            <div class="project-content__main">
+                {% if project.long_description %}
+                <div class="content-block glass-card" data-aos="fade-up">
+                    <h2 class="content-block__title">
+                        <i class="fas fa-file-alt"></i>
+                        Panoramica del progetto
+                    </h2>
+                    <div class="content-block__text">
+                        {{ project.long_description|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if project.challenge %}
+                <div class="content-block glass-card" data-aos="fade-up">
+                    <h2 class="content-block__title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        La sfida
+                    </h2>
+                    <div class="content-block__text">
+                        {{ project.challenge|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if project.solution %}
+                <div class="content-block glass-card" data-aos="fade-up">
+                    <h2 class="content-block__title">
+                        <i class="fas fa-lightbulb"></i>
+                        La soluzione
+                    </h2>
+                    <div class="content-block__text">
+                        {{ project.solution|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if project.results %}
+                <div class="content-block glass-card" data-aos="fade-up">
+                    <h2 class="content-block__title">
+                        <i class="fas fa-chart-line"></i>
+                        I risultati
+                    </h2>
+                    <div class="content-block__text">
+                        {{ project.results|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Gallery -->
+                {% if project.gallery %}
+                <div class="content-block glass-card" data-aos="fade-up">
+                    <h2 class="content-block__title">
+                        <i class="fas fa-images"></i>
+                        Galleria
+                    </h2>
+                    <div class="project-gallery">
+                        {% for image_url in project.gallery %}
+                        <div class="project-gallery__item">
+                            <img src="{{ image_url }}" alt="{{ project.title }} screenshot" loading="lazy">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <aside class="project-content__sidebar">
+                <div class="project-sidebar glass-card" data-aos="fade-left">
+                    <h3 class="project-sidebar__title">Dettagli Progetto</h3>
+                    
+                    <div class="project-sidebar__item">
+                        <span class="project-sidebar__label">
+                            <i class="fas fa-folder"></i> Categoria
+                        </span>
+                        <span class="project-sidebar__value">{{ project.get_category_display }}</span>
+                    </div>
+                    
+                    <div class="project-sidebar__item">
+                        <span class="project-sidebar__label">
+                            <i class="fas fa-calendar"></i> Data
+                        </span>
+                        <span class="project-sidebar__value">{{ project.created_at|date:"F Y" }}</span>
+                    </div>
+                    
+                    <div class="project-sidebar__item project-sidebar__item--full">
+                        <span class="project-sidebar__label">
+                            <i class="fas fa-code"></i> Tech Stack
+                        </span>
+                        <div class="project-sidebar__tech">
+                            {% for tech in project.tech_stack_list %}
+                            <span class="tech-pill">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    {% if project.external_url %}
+                    <div class="project-sidebar__item project-sidebar__item--full">
+                        <a href="{{ project.external_url }}" target="_blank" rel="noopener" class="btn btn--primary btn--full">
+                            <span>Visita il sito</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.github_url %}
+                    <div class="project-sidebar__item project-sidebar__item--full">
+                        <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="btn btn--outline btn--full">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Share -->
+                <div class="project-share glass-card" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="project-sidebar__title">Condividi</h3>
+                    <div class="project-share__buttons">
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ project.title }}" target="_blank" rel="noopener" class="share-btn share-btn--twitter" aria-label="Condividi su Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" rel="noopener" class="share-btn share-btn--linkedin" aria-label="Condividi su LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <button class="share-btn share-btn--copy" onclick="copyToClipboard('{{ request.build_absolute_uri }}')" aria-label="Copia link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<!-- Related Projects -->
+{% if related_projects %}
+<section class="related-projects section">
+    <div class="related-projects__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Altri Lavori</span>
+            <h2 class="section__title">Progetti correlati</h2>
+        </div>
+        
+        <div class="related-projects__grid">
+            {% for related in related_projects %}
+            <article class="project-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="project-card__image">
+                    <img src="{{ related.image_thumbnail.url }}" alt="{{ related.title }}" loading="lazy">
+                    <div class="project-card__overlay">
+                        <div class="project-card__actions">
+                            {% if related.external_url %}
+                            <a href="{{ related.external_url }}" target="_blank" rel="noopener" class="action-btn" aria-label="Visita sito">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                            <a href="{{ related.get_absolute_url }}" class="action-btn" aria-label="Dettagli">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card__content">
+                    <span class="project-card__category">{{ related.get_category_display }}</span>
+                    <h3 class="project-card__title">{{ related.title }}</h3>
+                    <p class="project-card__description">{{ related.description|truncatewords:15 }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="project-cta section">
+    <div class="project-cta__container container">
+        <div class="project-cta__content glass-card" data-aos="fade-up">
+            <h2 class="project-cta__title">Ti piace quello che vedi?</h2>
+            <p class="project-cta__text">Parliamo del tuo prossimo progetto e vediamo come posso aiutarti.</p>
+            <div class="project-cta__buttons">
+                <a href="{% url 'portfolio:index' %}#contact" class="btn btn--primary">
+                    <span>Contattami</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="{% url 'portfolio:projects_list' %}" class="btn btn--outline">
+                    <span>Vedi tutti i progetti</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show feedback
+        const btn = document.querySelector('.share-btn--copy');
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = originalIcon;
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}
+{% endblock %}

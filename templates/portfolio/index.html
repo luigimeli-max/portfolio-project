@@ -1,0 +1,699 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ site_settings.site_name|default:"Portfolio" }} - Web Developer | Creo Esperienze Digitali{% endblock %}
+
+{% block content %}
+<!-- ==================== HERO SECTION ==================== -->
+<section class="hero" id="hero">
+    <div class="hero__bg">
+        <div class="hero__gradient"></div>
+        <div class="hero__particles" id="particles"></div>
+        <div class="hero__grid"></div>
+    </div>
+    
+    <div class="hero__container container">
+        <div class="hero__content" data-aos="fade-up" data-aos-delay="100">
+            <span class="hero__greeting">Ciao, sono</span>
+            <h1 class="hero__title">
+                {{ site_settings.site_name|default:"Luigi" }}
+                <span class="hero__title-accent">.</span>
+            </h1>
+            <h2 class="hero__subtitle">
+                {{ site_settings.hero_title|default:"Creo esperienze digitali" }}
+            </h2>
+            <p class="hero__description">
+                {{ site_settings.hero_subtitle|default:"Web Developer specializzato nella creazione di siti web moderni, performanti e user-friendly." }}
+            </p>
+            
+            <div class="hero__buttons">
+                <a href="#projects" class="btn btn--primary">
+                    <span>Scopri i miei lavori</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#contact" class="btn btn--outline">
+                    <span>Contattami</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero__visual" data-aos="fade-left" data-aos-delay="300">
+            <div class="hero__code-block">
+                <div class="code-header">
+                    <span class="code-dot code-dot--red"></span>
+                    <span class="code-dot code-dot--yellow"></span>
+                    <span class="code-dot code-dot--green"></span>
+                    <span class="code-filename">developer.py</span>
+                </div>
+                <pre class="code-content"><code><span class="code-keyword">class</span> <span class="code-class">Developer</span>:
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(self):
+        self.name = <span class="code-string">"{{ site_settings.site_name|default:'Luigi' }}"</span>
+        self.role = <span class="code-string">"Web Developer"</span>
+        self.passion = <span class="code-string">"Building cool stuff"</span>
+        
+    <span class="code-keyword">def</span> <span class="code-function">get_skills</span>(self):
+        <span class="code-keyword">return</span> [<span class="code-string">"Python"</span>, <span class="code-string">"Django"</span>, <span class="code-string">"JavaScript"</span>]</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero__scroll-indicator">
+        <a href="#about" class="scroll-indicator">
+            <span class="scroll-text">Scroll</span>
+            <div class="scroll-icon">
+                <span class="scroll-dot"></span>
+            </div>
+        </a>
+    </div>
+</section>
+
+
+<!-- ==================== ABOUT SECTION ==================== -->
+<section class="about section" id="about">
+    <div class="about__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Chi Sono</span>
+            <h2 class="section__title">In 30 secondi</h2>
+        </div>
+        
+        <div class="about__content">
+            <div class="about__image-wrapper" data-aos="fade-right" data-aos-delay="100">
+                <div class="about__image-container">
+                    {% if site_settings.profile_image %}
+                    <img src="{{ site_settings.profile_image.url }}" alt="{{ site_settings.site_name }}" class="about__image" loading="lazy">
+                    {% else %}
+                    <div class="about__image-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                    <div class="about__image-glow"></div>
+                </div>
+                <div class="about__experience-badge">
+                    <span class="badge__number">{{ site_settings.years_experience|default:3 }}+</span>
+                    <span class="badge__text">Anni Esperienza</span>
+                </div>
+            </div>
+            
+            <div class="about__info" data-aos="fade-left" data-aos-delay="200">
+                <div class="about__text-container glass-card">
+                    <p class="about__text">
+                        {{ site_settings.about_text|default:"Sono un Web Developer appassionato con esperienza nella creazione di applicazioni web moderne e performanti. Mi specializzo in Python, Django e tecnologie frontend, con un occhio sempre attento all'esperienza utente e alle best practices di sviluppo." }}
+                    </p>
+                    
+                    <div class="about__skills-preview">
+                        <h4 class="about__skills-title">Tecnologie principali</h4>
+                        <div class="about__skill-tags">
+                            <span class="skill-tag" data-tooltip="Ho realizzato oltre 10 progetti">
+                                <i class="fab fa-python"></i> Python
+                            </span>
+                            <span class="skill-tag" data-tooltip="Framework preferito per backend">
+                                <i class="fab fa-python"></i> Django
+                            </span>
+                            <span class="skill-tag" data-tooltip="Uso quotidiano per interattività">
+                                <i class="fab fa-js-square"></i> JavaScript
+                            </span>
+                            <span class="skill-tag" data-tooltip="Framework reattivo moderno">
+                                <i class="fab fa-react"></i> React
+                            </span>
+                            <span class="skill-tag" data-tooltip="Database relazionale robusto">
+                                <i class="fas fa-database"></i> PostgreSQL
+                            </span>
+                            <span class="skill-tag" data-tooltip="Styling moderno e responsive">
+                                <i class="fab fa-css3-alt"></i> CSS3
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="about__cta">
+                        <a href="#contact" class="btn btn--primary">
+                            <span>Parliamo del tuo progetto</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        {% if site_settings.cv_file %}
+                        <a href="{{ site_settings.cv_file.url }}" class="btn btn--ghost" target="_blank">
+                            <i class="fas fa-download"></i>
+                            <span>Scarica CV</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== TIMELINE SECTION ==================== -->
+<section class="timeline section" id="timeline">
+    <div class="timeline__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Il Mio Percorso</span>
+            <h2 class="section__title">La mia evoluzione</h2>
+        </div>
+        
+        <div class="timeline__content">
+            <div class="timeline__line">
+                <div class="timeline__line-progress" id="timeline-progress"></div>
+            </div>
+            
+            {% for event in timeline_events %}
+            <div class="timeline__item {% if forloop.counter|divisibleby:2 %}timeline__item--right{% else %}timeline__item--left{% endif %}" 
+                 data-aos="fade-{% if forloop.counter|divisibleby:2 %}left{% else %}right{% endif %}"
+                 data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="timeline__dot" style="--dot-color: {{ event.color }}"></div>
+                <div class="timeline__card glass-card">
+                    <span class="timeline__year">{{ event.year }}</span>
+                    <h3 class="timeline__title">{{ event.title }}</h3>
+                    <p class="timeline__description">{{ event.description }}</p>
+                    {% if event.tech_stack %}
+                    <div class="timeline__tech">
+                        {% for tech in event.tech_stack %}
+                        <span class="tech-pill">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default timeline if no events -->
+            <div class="timeline__item timeline__item--left" data-aos="fade-right">
+                <div class="timeline__dot" style="--dot-color: #00d9ff"></div>
+                <div class="timeline__card glass-card">
+                    <span class="timeline__year">2021</span>
+                    <h3 class="timeline__title">Primi passi</h3>
+                    <p class="timeline__description">Ho iniziato il mio viaggio nel mondo della programmazione, imparando le basi di HTML, CSS e JavaScript.</p>
+                    <div class="timeline__tech">
+                        <span class="tech-pill">HTML</span>
+                        <span class="tech-pill">CSS</span>
+                        <span class="tech-pill">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline__item timeline__item--right" data-aos="fade-left" data-aos-delay="100">
+                <div class="timeline__dot" style="--dot-color: #00b8cc"></div>
+                <div class="timeline__card glass-card">
+                    <span class="timeline__year">2022</span>
+                    <h3 class="timeline__title">Backend Development</h3>
+                    <p class="timeline__description">Ho scoperto Python e Django, iniziando a costruire le prime applicazioni web fullstack.</p>
+                    <div class="timeline__tech">
+                        <span class="tech-pill">Python</span>
+                        <span class="tech-pill">Django</span>
+                        <span class="tech-pill">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline__item timeline__item--left" data-aos="fade-right" data-aos-delay="200">
+                <div class="timeline__dot" style="--dot-color: #00ffcc"></div>
+                <div class="timeline__card glass-card">
+                    <span class="timeline__year">2023 - Oggi</span>
+                    <h3 class="timeline__title">Specializzazione</h3>
+                    <p class="timeline__description">Mi sono specializzato nello sviluppo di applicazioni web moderne, lavorando con React e tecnologie cloud.</p>
+                    <div class="timeline__tech">
+                        <span class="tech-pill">React</span>
+                        <span class="tech-pill">REST API</span>
+                        <span class="tech-pill">Docker</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== PROJECTS SECTION ==================== -->
+<section class="projects section" id="projects">
+    <div class="projects__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Portfolio</span>
+            <h2 class="section__title">I miei progetti</h2>
+        </div>
+        
+        <!-- Filters -->
+        <div class="projects__filters" data-aos="fade-up" data-aos-delay="100">
+            <button class="filter-btn active" data-filter="all">Tutti</button>
+            {% for tech in tech_filters %}
+            <button class="filter-btn" data-filter="{{ tech|lower }}">{{ tech }}</button>
+            {% endfor %}
+        </div>
+        
+        <!-- Featured Project -->
+        {% if featured_project %}
+        <div class="projects__featured" data-aos="fade-up" data-aos-delay="200">
+            <div class="featured-project glass-card">
+                <div class="featured-project__image">
+                    <img src="{{ featured_project.image_thumbnail.url }}" alt="{{ featured_project.title }}" loading="lazy">
+                    <div class="featured-project__overlay">
+                        <span class="featured-badge">
+                            <i class="fas fa-star"></i> Progetto in evidenza
+                        </span>
+                    </div>
+                </div>
+                <div class="featured-project__content">
+                    <span class="featured-project__category">{{ featured_project.get_category_display }}</span>
+                    <h3 class="featured-project__title">{{ featured_project.title }}</h3>
+                    <p class="featured-project__description">{{ featured_project.description }}</p>
+                    <div class="featured-project__tech">
+                        {% for tech in featured_project.tech_stack_list %}
+                        <span class="tech-pill">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="featured-project__buttons">
+                        {% if featured_project.external_url %}
+                        <a href="{{ featured_project.external_url }}" target="_blank" rel="noopener" class="btn btn--primary">
+                            <span>Visualizza Sito</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        {% endif %}
+                        <a href="{{ featured_project.get_absolute_url }}" class="btn btn--outline">
+                            <span>Dettagli</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Projects Grid -->
+        <div class="projects__grid" id="projects-grid">
+            {% for project in projects %}
+            {% if not project.featured or not featured_project %}
+            <article class="project-card" 
+                     data-category="{{ project.category }}"
+                     data-tech="{{ project.tech_stack_list|join:' '|lower }}"
+                     data-aos="fade-up" 
+                     data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="project-card__image">
+                    <img src="{{ project.image_thumbnail.url }}" alt="{{ project.title }}" loading="lazy">
+                    <div class="project-card__overlay">
+                        <div class="project-card__actions">
+                            {% if project.external_url %}
+                            <a href="{{ project.external_url }}" target="_blank" rel="noopener" class="action-btn" aria-label="Visita sito">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="action-btn" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            {% endif %}
+                            <a href="{{ project.get_absolute_url }}" class="action-btn" aria-label="Dettagli">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card__content">
+                    <span class="project-card__category">{{ project.get_category_display }}</span>
+                    <h3 class="project-card__title">{{ project.title }}</h3>
+                    <p class="project-card__description">{{ project.description|truncatewords:20 }}</p>
+                    <div class="project-card__tech">
+                        {% for tech in project.tech_stack_list|slice:":4" %}
+                        <span class="tech-pill tech-pill--small">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+            {% empty %}
+            <div class="projects__empty">
+                <i class="fas fa-folder-open"></i>
+                <p>Nessun progetto disponibile al momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="projects__cta" data-aos="fade-up">
+            <a href="{% url 'portfolio:projects_list' %}" class="btn btn--outline">
+                <span>Vedi tutti i progetti</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== TESTIMONIALS SECTION ==================== -->
+{% if testimonials %}
+<section class="testimonials section" id="testimonials">
+    <div class="testimonials__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Testimonianze</span>
+            <h2 class="section__title">Cosa dicono di me</h2>
+        </div>
+        
+        <div class="testimonials__slider swiper" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper-wrapper">
+                {% for testimonial in testimonials %}
+                <div class="swiper-slide">
+                    <div class="testimonial-card glass-card">
+                        <div class="testimonial-card__quote">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-card__text">{{ testimonial.quote }}</p>
+                        <div class="testimonial-card__author">
+                            {% if testimonial.photo %}
+                            <img src="{{ testimonial.photo.url }}" alt="{{ testimonial.name }}" class="testimonial-card__avatar">
+                            {% else %}
+                            <div class="testimonial-card__avatar testimonial-card__avatar--placeholder">
+                                {{ testimonial.name|slice:":1" }}
+                            </div>
+                            {% endif %}
+                            <div class="testimonial-card__info">
+                                <h4 class="testimonial-card__name">{{ testimonial.name }}</h4>
+                                <span class="testimonial-card__role">{{ testimonial.role }}</span>
+                            </div>
+                        </div>
+                        {% if testimonial.project %}
+                        <div class="testimonial-card__project">
+                            <span>Progetto:</span>
+                            <a href="{{ testimonial.project.get_absolute_url }}">{{ testimonial.project.title }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+<!-- ==================== SKILLS SECTION ==================== -->
+<section class="skills section" id="skills">
+    <div class="skills__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Competenze</span>
+            <h2 class="section__title">Il mio toolkit</h2>
+        </div>
+        
+        <div class="skills__matrix">
+            {% for category, skills_list in skills_by_category.items %}
+            <div class="skills__category glass-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <h3 class="skills__category-title">
+                    {% if category == "Frontend" %}
+                    <i class="fas fa-laptop-code"></i>
+                    {% elif category == "Backend" %}
+                    <i class="fas fa-server"></i>
+                    {% elif category == "Tools & DevOps" %}
+                    <i class="fas fa-tools"></i>
+                    {% else %}
+                    <i class="fas fa-brain"></i>
+                    {% endif %}
+                    {{ category }}
+                </h3>
+                <div class="skills__grid">
+                    {% for skill in skills_list %}
+                    <div class="skill-item" data-tooltip="{{ skill.years_experience }} anni • {{ skill.proficiency }}%">
+                        {% if skill.icon %}
+                        <i class="{{ skill.icon }}"></i>
+                        {% else %}
+                        <i class="fas fa-code"></i>
+                        {% endif %}
+                        <span class="skill-item__name">{{ skill.name }}</span>
+                        <div class="skill-item__level">
+                            <div class="skill-item__progress" style="--progress: {{ skill.proficiency }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default skills if none configured -->
+            <div class="skills__category glass-card" data-aos="fade-up">
+                <h3 class="skills__category-title">
+                    <i class="fas fa-laptop-code"></i> Frontend
+                </h3>
+                <div class="skills__grid">
+                    <div class="skill-item" data-tooltip="3 anni • 90%">
+                        <i class="fab fa-html5"></i>
+                        <span class="skill-item__name">HTML5</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 90%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="3 anni • 85%">
+                        <i class="fab fa-css3-alt"></i>
+                        <span class="skill-item__name">CSS3</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 85%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="2 anni • 80%">
+                        <i class="fab fa-js-square"></i>
+                        <span class="skill-item__name">JavaScript</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 80%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="1 anno • 70%">
+                        <i class="fab fa-react"></i>
+                        <span class="skill-item__name">React</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 70%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="skills__category glass-card" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="skills__category-title">
+                    <i class="fas fa-server"></i> Backend
+                </h3>
+                <div class="skills__grid">
+                    <div class="skill-item" data-tooltip="3 anni • 90%">
+                        <i class="fab fa-python"></i>
+                        <span class="skill-item__name">Python</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 90%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="2 anni • 85%">
+                        <i class="fab fa-python"></i>
+                        <span class="skill-item__name">Django</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 85%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="2 anni • 75%">
+                        <i class="fas fa-database"></i>
+                        <span class="skill-item__name">PostgreSQL</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 75%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="1 anno • 65%">
+                        <i class="fas fa-cogs"></i>
+                        <span class="skill-item__name">REST API</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 65%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="skills__category glass-card" data-aos="fade-up" data-aos-delay="200">
+                <h3 class="skills__category-title">
+                    <i class="fas fa-tools"></i> Tools
+                </h3>
+                <div class="skills__grid">
+                    <div class="skill-item" data-tooltip="3 anni • 90%">
+                        <i class="fab fa-git-alt"></i>
+                        <span class="skill-item__name">Git</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 90%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="1 anno • 60%">
+                        <i class="fab fa-docker"></i>
+                        <span class="skill-item__name">Docker</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 60%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="2 anni • 70%">
+                        <i class="fab fa-linux"></i>
+                        <span class="skill-item__name">Linux</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 70%"></div></div>
+                    </div>
+                    <div class="skill-item" data-tooltip="2 anni • 80%">
+                        <i class="fas fa-code"></i>
+                        <span class="skill-item__name">VS Code</span>
+                        <div class="skill-item__level"><div class="skill-item__progress" style="--progress: 80%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="skills__category glass-card" data-aos="fade-up" data-aos-delay="300">
+                <h3 class="skills__category-title">
+                    <i class="fas fa-brain"></i> Soft Skills
+                </h3>
+                <div class="skills__grid skills__grid--soft">
+                    <div class="skill-item skill-item--soft">
+                        <i class="fas fa-comments"></i>
+                        <span class="skill-item__name">Comunicazione</span>
+                    </div>
+                    <div class="skill-item skill-item--soft">
+                        <i class="fas fa-lightbulb"></i>
+                        <span class="skill-item__name">Problem Solving</span>
+                    </div>
+                    <div class="skill-item skill-item--soft">
+                        <i class="fas fa-users"></i>
+                        <span class="skill-item__name">Team Work</span>
+                    </div>
+                    <div class="skill-item skill-item--soft">
+                        <i class="fas fa-clock"></i>
+                        <span class="skill-item__name">Time Management</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== STATS SECTION ==================== -->
+<section class="stats section" id="stats">
+    <div class="stats__container container">
+        <div class="stats__grid">
+            <div class="stat-card glass-card" data-aos="fade-up">
+                <div class="stat-card__icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="stat-card__number" data-count="{{ site_settings.projects_completed|default:15 }}">0</div>
+                <div class="stat-card__label">Progetti Completati</div>
+            </div>
+            
+            <div class="stat-card glass-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-card__icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="stat-card__number" data-count="{{ site_settings.sites_live|default:10 }}">0</div>
+                <div class="stat-card__label">Siti Online</div>
+            </div>
+            
+            <div class="stat-card glass-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-card__icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-card__number" data-count="{{ site_settings.years_experience|default:3 }}">0</div>
+                <div class="stat-card__label">Anni Esperienza</div>
+            </div>
+            
+            <div class="stat-card glass-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-card__icon">
+                    <i class="fas fa-smile"></i>
+                </div>
+                <div class="stat-card__number" data-count="{{ site_settings.happy_clients|default:12 }}">0</div>
+                <div class="stat-card__label">Clienti Soddisfatti</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== PROCESS SECTION ==================== -->
+<section class="process section" id="process">
+    <div class="process__container container">
+        <div class="section__header" data-aos="fade-up">
+            <span class="section__tag">Metodologia</span>
+            <h2 class="section__title">Come lavoro</h2>
+        </div>
+        
+        <div class="process__steps">
+            <div class="process__connector">
+                <div class="process__connector-line"></div>
+            </div>
+            
+            <div class="process__step" data-aos="fade-up">
+                <div class="process__step-number">01</div>
+                <div class="process__step-icon glass-card">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3 class="process__step-title">Discovery</h3>
+                <p class="process__step-description">
+                    Analizzo le tue esigenze, definisco gli obiettivi e studio il mercato di riferimento.
+                </p>
+                <span class="process__step-time">1-2 settimane</span>
+            </div>
+            
+            <div class="process__step" data-aos="fade-up" data-aos-delay="100">
+                <div class="process__step-number">02</div>
+                <div class="process__step-icon glass-card">
+                    <i class="fas fa-pencil-ruler"></i>
+                </div>
+                <h3 class="process__step-title">Design</h3>
+                <p class="process__step-description">
+                    Creo wireframe e mockup per visualizzare l'aspetto finale del progetto.
+                </p>
+                <span class="process__step-time">1-2 settimane</span>
+            </div>
+            
+            <div class="process__step" data-aos="fade-up" data-aos-delay="200">
+                <div class="process__step-number">03</div>
+                <div class="process__step-icon glass-card">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3 class="process__step-title">Development</h3>
+                <p class="process__step-description">
+                    Sviluppo il progetto con codice pulito, testato e ottimizzato per le performance.
+                </p>
+                <span class="process__step-time">2-4 settimane</span>
+            </div>
+            
+            <div class="process__step" data-aos="fade-up" data-aos-delay="300">
+                <div class="process__step-number">04</div>
+                <div class="process__step-icon glass-card">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="process__step-title">Launch</h3>
+                <p class="process__step-description">
+                    Deploy del progetto live con supporto post-lancio e manutenzione.
+                </p>
+                <span class="process__step-time">1 settimana</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== CONTACT CTA SECTION ==================== -->
+<section class="contact-cta section" id="contact">
+    <div class="contact-cta__bg">
+        <div class="contact-cta__gradient"></div>
+    </div>
+    
+    <div class="contact-cta__container container">
+        <div class="contact-cta__content" data-aos="fade-up">
+            <span class="section__tag">Contatti</span>
+            <h2 class="contact-cta__title">Hai un progetto in mente?</h2>
+            <p class="contact-cta__text">
+                Parliamone! Sono sempre interessato a nuove opportunità e collaborazioni interessanti.
+            </p>
+            
+            <div class="contact-cta__buttons">
+                <a href="mailto:{{ site_settings.email|default:'email@example.com' }}" class="btn btn--primary btn--large">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contattami via email</span>
+                </a>
+                {% if site_settings.cv_file %}
+                <a href="{{ site_settings.cv_file.url }}" class="btn btn--outline btn--large" target="_blank">
+                    <i class="fas fa-download"></i>
+                    <span>Scarica CV</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="contact-form__wrapper glass-card" data-aos="fade-up" data-aos-delay="100">
+            <h3 class="contact-form__title">Oppure scrivimi direttamente</h3>
+            <form class="contact-form" id="contact-form" action="{% url 'portfolio:contact_submit' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="name" class="form-input" placeholder="Il tuo nome" required>
+                    <label class="form-label">Nome</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" class="form-input" placeholder="La tua email" required>
+                    <label class="form-label">Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="subject" class="form-input" placeholder="Oggetto (opzionale)">
+                    <label class="form-label">Oggetto</label>
+                </div>
+                <div class="form-group">
+                    <textarea name="message" class="form-input form-textarea" placeholder="Il tuo messaggio..." rows="4" required></textarea>
+                    <label class="form-label">Messaggio</label>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full">
+                    <span>Invia messaggio</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+            <div class="contact-form__status" id="form-status"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

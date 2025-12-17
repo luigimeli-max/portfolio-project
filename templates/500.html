@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}500 - Errore del server | {{ site_settings.site_name|default:"Portfolio" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .error-page::before {
+        content: '500';
+        position: absolute;
+        font-size: clamp(150px, 30vw, 400px);
+        font-weight: 900;
+        color: rgba(255, 107, 107, 0.03);
+        z-index: -1;
+        letter-spacing: -0.05em;
+        user-select: none;
+        animation: pulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 0.03; transform: scale(1); }
+        50% { opacity: 0.05; transform: scale(1.02); }
+    }
+    
+    .error-content {
+        max-width: 600px;
+    }
+    
+    .error-code {
+        font-size: clamp(80px, 15vw, 150px);
+        font-weight: 900;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 1rem;
+    }
+    
+    .error-title {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--color-text-primary);
+    }
+    
+    .error-message {
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.7;
+    }
+    
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .error-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .error-btn--primary {
+        background: linear-gradient(135deg, var(--color-accent) 0%, #00ffcc 100%);
+        color: var(--color-bg-primary);
+    }
+    
+    .error-btn--primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="error-page">
+    <div class="error-content">
+        <div class="error-code">500</div>
+        <h1 class="error-title">Errore del server</h1>
+        <p class="error-message">
+            Si è verificato un errore interno del server. 
+            Il nostro team è stato notificato e sta lavorando per risolvere il problema.
+        </p>
+        <div class="error-actions">
+            <a href="{% url 'index' %}" class="error-btn error-btn--primary">
+                <i class="fas fa-home"></i>
+                Torna alla Home
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}

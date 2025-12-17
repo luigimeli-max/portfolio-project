@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}{{ site_settings.site_name|default:"Portfolio" }} - Web Developer{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ site_settings.hero_subtitle|default:"Web Developer specializzato nella creazione di esperienze digitali moderne e performanti." }}{% endblock %}">
+    <meta name="keywords" content="web developer, frontend, backend, django, python, portfolio, fullstack">
+    <meta name="author" content="{{ site_settings.site_name|default:"Luigi" }}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}{{ site_settings.site_name|default:"Portfolio" }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ site_settings.hero_subtitle|default:"Web Developer" }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/og-image.jpg' %}{% endblock %}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ site_settings.site_name|default:"Portfolio" }}">
+    <meta name="twitter:description" content="{{ site_settings.hero_subtitle|default:"Web Developer" }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    <!-- Preload Critical Assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Smooth Scroll Behavior -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <div class="loader">
+            <div class="loader-ring"></div>
+            <span class="loader-text">Loading</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{% url 'portfolio:index' %}" class="nav__logo">
+                <span class="logo-text">{{ site_settings.site_name|default:"LP" }}</span>
+            </a>
+            
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="{% url 'portfolio:index' %}#hero" class="nav__link">Home</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'portfolio:index' %}#about" class="nav__link">Chi Sono</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'portfolio:index' %}#projects" class="nav__link">Progetti</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'portfolio:index' %}#skills" class="nav__link">Skills</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="{% url 'portfolio:index' %}#contact" class="nav__link nav__link--cta">Contattami</a>
+                    </li>
+                </ul>
+                
+                <div class="nav__close" id="nav-close">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="footer__container container">
+            <div class="footer__content">
+                <!-- Logo & Description -->
+                <div class="footer__info">
+                    <a href="{% url 'portfolio:index' %}" class="footer__logo">
+                        {{ site_settings.site_name|default:"LP" }}
+                    </a>
+                    <p class="footer__description">
+                        Creo esperienze digitali moderne, performanti e memorabili.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="footer__links">
+                    <h4 class="footer__title">Link Rapidi</h4>
+                    <ul class="footer__list">
+                        <li><a href="{% url 'portfolio:index' %}#hero" class="footer__link">Home</a></li>
+                        <li><a href="{% url 'portfolio:index' %}#about" class="footer__link">Chi Sono</a></li>
+                        <li><a href="{% url 'portfolio:index' %}#projects" class="footer__link">Progetti</a></li>
+                        <li><a href="{% url 'portfolio:index' %}#contact" class="footer__link">Contatti</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="footer__social">
+                    <h4 class="footer__title">Seguimi</h4>
+                    <div class="footer__social-links">
+                        {% if site_settings.github_url %}
+                        <a href="{{ site_settings.github_url }}" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        {% endif %}
+                        {% if site_settings.linkedin_url %}
+                        <a href="{{ site_settings.linkedin_url }}" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        {% endif %}
+                        {% if site_settings.twitter_url %}
+                        <a href="{{ site_settings.twitter_url }}" target="_blank" rel="noopener noreferrer" class="footer__social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer__bottom">
+                <p class="footer__copy">
+                    © {{ "now"|date:"Y" }} {{ site_settings.site_name|default:"Portfolio" }}. Tutti i diritti riservati.
+                </p>
+                <div class="footer__decoration">
+                    <span class="footer__dot"></span>
+                    <span class="footer__line"></span>
+                    <span class="footer__dot"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Decorative Element -->
+        <div class="footer__glow"></div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="back-to-top" aria-label="Torna su">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- Scripts -->
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Swiper.js for Testimonials -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tutti i Progetti | {{ site_settings.site_name|default:"Portfolio" }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="page-header__container container">
+        <div class="page-header__content" data-aos="fade-up">
+            <a href="{% url 'portfolio:index' %}" class="page-header__back">
+                <i class="fas fa-arrow-left"></i>
+                <span>Home</span>
+            </a>
+            <h1 class="page-header__title">Tutti i Progetti</h1>
+            <p class="page-header__description">
+                Esplora tutti i miei lavori, dai progetti frontend alle applicazioni fullstack.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Filters -->
+<section class="page-filters">
+    <div class="page-filters__container container">
+        <div class="filters-row" data-aos="fade-up">
+            <!-- Category Filters -->
+            <div class="filters-group">
+                <span class="filters-label">Categoria:</span>
+                <div class="filters-buttons">
+                    <a href="{% url 'portfolio:projects_list' %}" class="filter-btn {% if not current_category %}active{% endif %}">
+                        Tutti
+                    </a>
+                    <a href="?category=frontend" class="filter-btn {% if current_category == 'frontend' %}active{% endif %}">
+                        Frontend
+                    </a>
+                    <a href="?category=backend" class="filter-btn {% if current_category == 'backend' %}active{% endif %}">
+                        Backend
+                    </a>
+                    <a href="?category=fullstack" class="filter-btn {% if current_category == 'fullstack' %}active{% endif %}">
+                        Fullstack
+                    </a>
+                    <a href="?category=design" class="filter-btn {% if current_category == 'design' %}active{% endif %}">
+                        Design
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Tech Filters -->
+            <div class="filters-group">
+                <span class="filters-label">Tecnologia:</span>
+                <div class="filters-buttons filters-buttons--scrollable">
+                    {% for tech in tech_filters %}
+                    <a href="?tech={{ tech }}" class="filter-btn filter-btn--small {% if current_tech == tech %}active{% endif %}">
+                        {{ tech }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="projects-page section">
+    <div class="projects-page__container container">
+        <div class="projects__grid projects__grid--full">
+            {% for project in projects %}
+            <article class="project-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+                <div class="project-card__image">
+                    <img src="{{ project.image_thumbnail.url }}" alt="{{ project.title }}" loading="lazy">
+                    {% if project.featured %}
+                    <span class="project-card__badge">
+                        <i class="fas fa-star"></i> Featured
+                    </span>
+                    {% endif %}
+                    <div class="project-card__overlay">
+                        <div class="project-card__actions">
+                            {% if project.external_url %}
+                            <a href="{{ project.external_url }}" target="_blank" rel="noopener" class="action-btn" aria-label="Visita sito">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="action-btn" aria-label="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            {% endif %}
+                            <a href="{{ project.get_absolute_url }}" class="action-btn" aria-label="Dettagli">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-card__content">
+                    <span class="project-card__category">{{ project.get_category_display }}</span>
+                    <h3 class="project-card__title">{{ project.title }}</h3>
+                    <p class="project-card__description">{{ project.description|truncatewords:20 }}</p>
+                    <div class="project-card__tech">
+                        {% for tech in project.tech_stack_list|slice:":4" %}
+                        <span class="tech-pill tech-pill--small">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="projects__empty">
+                <i class="fas fa-folder-open"></i>
+                <h3>Nessun progetto trovato</h3>
+                <p>Prova a rimuovere i filtri per vedere tutti i progetti.</p>
+                <a href="{% url 'portfolio:projects_list' %}" class="btn btn--primary">
+                    Vedi tutti
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if projects.has_other_pages %}
+        <div class="pagination" data-aos="fade-up">
+            <div class="pagination__container">
+                {% if projects.has_previous %}
+                <a href="?page={{ projects.previous_page_number }}" class="pagination__btn">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                {% endif %}
+                
+                <div class="pagination__numbers">
+                    {% for num in projects.paginator.page_range %}
+                    {% if projects.number == num %}
+                    <span class="pagination__number pagination__number--active">{{ num }}</span>
+                    {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
+                    <a href="?page={{ num }}" class="pagination__number">{{ num }}</a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                
+                {% if projects.has_next %}
+                <a href="?page={{ projects.next_page_number }}" class="pagination__btn">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="project-cta section">
+    <div class="project-cta__container container">
+        <div class="project-cta__content glass-card" data-aos="fade-up">
+            <h2 class="project-cta__title">Hai un progetto in mente?</h2>
+            <p class="project-cta__text">Parliamone e vediamo come posso aiutarti a realizzarlo.</p>
+            <a href="{% url 'portfolio:index' %}#contact" class="btn btn--primary">
+                <span>Contattami</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
