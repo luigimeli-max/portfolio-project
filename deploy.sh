@@ -1,55 +1,78 @@
 #!/bin/bash
-# Deployment script for Portfolio Project
+#############################################################################
+# Script di deploy per Portfolio Django
+# Esegui questo script dopo ogni modifica al codice per aggiornare il sito
+#############################################################################
 
-echo "==================================="
-echo "Portfolio Deployment Script"
-echo "==================================="
+set -e  # Exit on error
 
-# Colors
+# Colori per output
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
-# Get current directory
-PROJECT_DIR=$(pwd)
+# Variabili
+APP_DIR="/home/portfolio/portfolio_project"
+VENV_DIR="$APP_DIR/venv"
 
-echo -e "${YELLOW}1. Pulling latest code...${NC}"
-git pull origin main
+echo -e "${GREEN}==================================================="
+echo "DEPLOY PORTFOLIO - $(date)"
+echo "===================================================${NC}"
 
-echo -e "${YELLOW}2. Activating virtual environment...${NC}"
-source venv/bin/activate
+# 1. Vai alla directory del progetto
+cd $APP_DIR
 
-echo -e "${YELLOW}3. Installing dependencies...${NC}"
+# 2. Pull delle modifiche da Git
+echo -e "${GREEN}[1/7] Pull da Git...${NC}"
+git pull origin main || {
+    echo -e "${YELLOW}Errore nel pull da git. Continuo comunque...${NC}"
+}
+
+# 3. Attiva virtual environment
+echo -e "${GREEN}[2/7] Attivazione virtual environment...${NC}"
+source $VENV_DIR/bin/activate
+
+# 4. Aggiorna le dipendenze
+echo -e "${GREEN}[3/7] Aggiornamento dipendenze...${NC}"
+pip install --upgrade pip
 pip install -r requirements.txt
 
-echo -e "${YELLOW}4. Running migrations...${NC}"
+# 5. Esegui migrazioni database
+echo -e "${GREEN}[4/7] Esecuzione migrazioni database...${NC}"
+python manage.py makemigrations
 python manage.py migrate --noinput
 
-echo -e "${YELLOW}5. Collecting static files...${NC}"
-python manage.py collectstatic --noinput --clear
+# 6. Raccogli file statici
+echo -e "${GREEN}[5/7] Raccolta file statici...${NC}"
+python manage.py collectstatic --noinput
 
-echo -e "${YELLOW}6. Restarting Gunicorn...${NC}"
-sudo systemctl restart portfolio
+# 7. Riavvia Gunicorn
+echo -e "${GREEN}[6/7] Riavvio Gunicorn...${NC}"
+sudo systemctl restart gunicorn
 
-echo -e "${YELLOW}7. Restarting Nginx...${NC}"
-sudo systemctl restart nginx
-
-echo -e "${GREEN}==================================="
-echo "Deployment completed successfully!"
-echo "===================================${NC}"
-
-# Check service status
-if systemctl is-active --quiet portfolio; then
-    echo -e "${GREEN}✓ Gunicorn is running${NC}"
+# Verifica stato
+sleep 2
+if sudo systemctl is-active --quiet gunicorn; then
+    echo -e "${GREEN}✓ Gunicorn riavviato correttamente${NC}"
 else
-    echo -e "${RED}✗ Gunicorn is not running${NC}"
-    sudo systemctl status portfolio
+    echo -e "${RED}✗ Errore: Gunicorn non è attivo!${NC}"
+    sudo systemctl status gunicorn
+    exit 1
 fi
 
-if systemctl is-active --quiet nginx; then
-    echo -e "${GREEN}✓ Nginx is running${NC}"
-else
-    echo -e "${RED}✗ Nginx is not running${NC}"
-    sudo systemctl status nginx
-fi
+# 8. Riavvia Nginx (opzionale, solo se hai modificato configurazioni)
+echo -e "${GREEN}[7/7] Riavvio Nginx...${NC}"
+sudo systemctl reload nginx
+
+echo ""
+echo -e "${GREEN}==================================================="
+echo "DEPLOY COMPLETATO CON SUCCESSO!"
+echo "===================================================${NC}"
+echo ""
+echo -e "${GREEN}Sito aggiornato: https://luigimeli.work${NC}"
+echo ""
+
+# Mostra ultimi log
+echo -e "${YELLOW}Ultimi log di Gunicorn:${NC}"
+sudo tail -n 20 /var/log/gunicorn/error.log

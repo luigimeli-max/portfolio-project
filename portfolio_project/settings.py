@@ -21,7 +21,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-produc
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Allowed hosts from environment variable (comma-separated)
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Domini configurati: luigimeli.work, www.luigimeli.work, IP: 38.242.208.240
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,luigimeli.work,www.luigimeli.work,38.242.208.240').split(',')
 
 
 # Application definition
@@ -153,8 +154,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Development
 # EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = 'portfolio@example.com'
-CONTACT_EMAIL = 'your.email@example.com'
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@luigimeli.work')
+CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'info@luigimeli.work')
 
 
 # Security Settings for Production
@@ -172,19 +173,20 @@ if not DEBUG:
 
 # Site Configuration (used in templates)
 SITE_CONFIG = {
-    'name': 'Luigi Portfolio',
-    'author': 'Luigi',
-    'email': 'luigi@example.com',
+    'name': 'Luigi Meli Portfolio',
+    'author': 'Luigi Meli',
+    'email': 'info@luigimeli.work',
     'phone': '+39 123 456 7890',
     'location': 'Italia',
     'description': 'Web Developer specializzato in creazione di esperienze digitali moderne e performanti.',
-    'keywords': 'web developer, frontend, backend, django, python, portfolio',
+    'keywords': 'web developer, frontend, backend, django, python, portfolio, luigi meli',
     'social': {
         'github': 'https://github.com/tuousername',
         'linkedin': 'https://linkedin.com/in/tuousername',
         'twitter': 'https://twitter.com/tuousername',
     },
     'cv_url': '/static/files/cv.pdf',
+    'domain': 'luigimeli.work',
 }
 
 
